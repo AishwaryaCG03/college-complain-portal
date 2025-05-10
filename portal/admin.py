@@ -1,5 +1,8 @@
 from django.contrib import admin
+from django.utils import timezone 
 from .models import Profile, Category, Complaint
+from django.contrib import admin
+from .models import Complaint
 
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
@@ -14,3 +17,12 @@ class ComplaintAdmin(admin.ModelAdmin):
     list_display = ('id', 'category', 'status', 'created_at', 'resolved_at', 'anonymous', 'escalation_level')
     list_filter = ('status', 'category', 'escalation_level')
     search_fields = ('description',)
+    readonly_fields = ('created_at', 'resolved_at')
+
+    # Optional: add actions to mark complaints as resolved
+    actions = ['mark_resolved']
+
+    def mark_resolved(self, request, queryset):
+        updated = queryset.update(status='Resolved', resolved_at=timezone.now())
+        self.message_user(request, f"{updated} complaint(s) marked as resolved.")
+    mark_resolved.short_description = "Mark selected complaints as resolved"
