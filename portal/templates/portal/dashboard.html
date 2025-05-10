@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Dashboard - {{ role|capfirst }}</h2>
+{% if complaints %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Raised On</th>
+                <th>Resolved On</th>
+                <th>Anon</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for c in complaints %}
+            <tr>
+                <td>{{ c.id }}</td>
+                <td>{{ c.category.name }}</td>
+                <td>{{ c.status }}</td>
+                <td>{{ c.created_at|date:"Y-m-d" }}</td>
+                <td>{% if c.resolved_at %}{{ c.resolved_at|date:"Y-m-d" }}{% else %} - {% endif %}</td>
+                <td>{{ c.anonymous }}</td>
+                <td><a href="{% url 'complaint_detail' c.id %}">View</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No complaints to show. <a href="{% url 'create_complaint' %}">Submit a complaint</a></p>
+{% endif %}
+{% endblock %}

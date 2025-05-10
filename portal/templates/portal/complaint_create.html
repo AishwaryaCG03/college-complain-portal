@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Submit a Complaint</h2>
+<form method="post" enctype="multipart/form-data" id="complaintForm">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Submit</button>
+</form>
+<script>
+    // JS to confirm anonymous submission causing user info to be hidden
+    document.getElementById('complaintForm').addEventListener('submit', function(e) {
+        const anonCheckbox = document.querySelector('input[name="anonymous"]');
+        if (anonCheckbox && anonCheckbox.checked) {
+            if (!confirm("Are you sure you want to submit this complaint anonymously? Your identity will be hidden.")) {
+                e.preventDefault();
+            }
+        }
+    });
+</script>
+{% endblock %}

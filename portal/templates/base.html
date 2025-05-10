@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>College Complaint Portal</title>
+    <style>
+        /* Basic CSS (inline for simplification) */
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; }
+        header { background: #004080; color: white; padding: 10px 20px; }
+        header h1 { margin: 0; }
+        nav { margin-top: 10px; }
+        nav a { color: white; margin-right: 15px; text-decoration: none; font-weight: bold; }
+        .container { max-width: 900px; margin: 20px auto; padding: 20px; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
+        footer { background: #004080; color: white; text-align: center; padding: 10px; margin-top: 20px;}
+        .btn { background: #0066cc; color: white; padding: 8px 15px; border: none; border-radius: 3px; cursor: pointer; font-size: 14px;}
+        .btn:hover { background: #004d99; }
+        input, select, textarea { width: 100%; padding: 8px; margin: 6px 0 12px 0; border: 1px solid #ccc; border-radius: 3px; }
+        label { font-weight: bold; }
+        .errorlist { color: red; list-style-type: none; padding-left: 0; }
+        .message { background: #d4edda; color: #155724; padding: 10px; border-radius: 3px; margin-bottom: 15px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: 8px; border-bottom: 1px solid #ddd;}
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container { width: 95%; }
+            nav a { display: block; margin: 8px 0; }
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <header>
+        <h1>College Complaint Portal</h1>
+        <nav>
+            {% if user.is_authenticated %}
+                <a href="{% url 'dashboard' %}">Dashboard</a>
+                <a href="{% url 'create_complaint' %}">New Complaint</a>
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'logout' %}">Logout</a>
+            {% else %}
+                <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
+            {% endif %}
+        </nav>
+    </header>
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="message">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+        {% block content %}
+        {% endblock %}
+    </div>
+    <footer>
+        &copy; 2024 College Complaint Portal
+    </footer>
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Complaint Details #{{ complaint.id }}</h2>
+<p><strong>Category:</strong> {{ complaint.category.name }}</p>
+<p><strong>Description:</strong></p>
+<p>{{ complaint.description }}</p>
+{% if complaint.evidence %}
+<p><strong>Evidence:</strong> <a href="{{ complaint.evidence.url }}" target="_blank">View File</a></p>
+{% endif %}
+<p><strong>Status:</strong> {{ complaint.status }}</p>
+<p><strong>Raised on:</strong> {{ complaint.created_at|date:"Y-m-d H:i" }}</p>
+<p><strong>Resolved on:</strong> 
+{% if complaint.resolved_at %}
+    {{ complaint.resolved_at|date:"Y-m-d H:i" }}
+{% else %}
+    Not resolved yet
+{% endif %}
+</p>
+{% if complaint.anonymous %}
+<p><em>This complaint was submitted anonymously.</em></p>
+{% endif %}
+
+{% if complaint.status == 'Resolved' %}
+    {% if rating_given %}
+        <p>Your Rating: {{ complaint.rating }} / 5 stars</p>
+    {% else %}
+        <h3>Rate the Resolution</h3>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.rating }}
+            <button type="submit" class="btn">Submit Rating</button>
+        </form>
+    {% endif %}
+{% else %}
+<p>The complaint is not yet resolved. Thank you for your patience.</p>
+{% endif %}
+<a href="{% url 'dashboard' %}">Back to Dashboard</a>
+{% endblock %}
