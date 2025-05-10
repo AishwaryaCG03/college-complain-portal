@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 <h2>Dashboard - {{ role|capfirst }}</h2>
+
 {% if complaints %}
     <table>
         <thead>
@@ -12,6 +13,7 @@
                 <th>Resolved On</th>
                 <th>Anon</th>
                 <th>Details</th>
+                
             </tr>
         </thead>
         <tbody>
@@ -29,6 +31,8 @@
         </tbody>
     </table>
 {% else %}
-    <p>No complaints to show. <a href="{% url 'create_complaint' %}">Submit a complaint</a></p>
+    <p>No complaints found.</p>
 {% endif %}
+
 {% endblock %}
+

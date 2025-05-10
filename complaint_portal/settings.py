@@ -86,7 +86,10 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Login redirect
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
+<<<<<<< HEAD
 
+=======
+>>>>>>> 15e301f (Describe the updates you made)
 # complaint_portal/settings.py
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

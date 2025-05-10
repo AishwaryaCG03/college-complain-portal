@@ -3,7 +3,10 @@ from django.utils import timezone
 from .models import Profile, Category, Complaint
 from django.contrib import admin
 from .models import Complaint
+<<<<<<< HEAD
 
+=======
+>>>>>>> 15e301f (Describe the updates you made)
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'role')
@@ -12,10 +15,13 @@ class ProfileAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
+# portal/admin.py
+
+
 @admin.register(Complaint)
 class ComplaintAdmin(admin.ModelAdmin):
-    list_display = ('id', 'category', 'status', 'created_at', 'resolved_at', 'anonymous', 'escalation_level')
-    list_filter = ('status', 'category', 'escalation_level')
+    list_display = ('id', 'category', 'status', 'created_at', 'resolved_at')
+    list_filter = ('status', 'category')
     search_fields = ('description',)
     readonly_fields = ('created_at', 'resolved_at')
 
@@ -26,3 +32,7 @@ class ComplaintAdmin(admin.ModelAdmin):
         updated = queryset.update(status='Resolved', resolved_at=timezone.now())
         self.message_user(request, f"{updated} complaint(s) marked as resolved.")
     mark_resolved.short_description = "Mark selected complaints as resolved"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 15e301f (Describe the updates you made)
