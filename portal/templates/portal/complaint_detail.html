@@ -36,3 +36,12 @@
 {% endif %}
 <a href="{% url 'dashboard' %}">Back to Dashboard</a>
 {% endblock %}
+
+{% if complaint.status != 'Resolved' %}
+  <form method="post" style="margin-top: 20px;">
+    {% csrf_token %}
+    <button type="submit" name="resolve" value="true" class="btn">Mark as Resolved</button>
+  </form>
+{% else %}
+  <p><strong>This complaint has been resolved.</strong></p>
+{% endif %}
