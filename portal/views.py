@@ -2,9 +2,17 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.core.mail import send_mail
+from django.conf import settings
 from .forms import SignUpForm, ComplaintForm, RatingForm
 from .models import Complaint, Category, Profile
 from django.utils import timezone
+
+def send_resolution_email(complaint):
+    subject = 'Your Complaint has been Resolved'
+    message = f'Your complaint (ID: {complaint.id}) has been resolved. Thank you for your patience!'
+    recipient_list = [complaint.user.email] if complaint.user else []
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
 
 def signup(request):
     if request.method == 'POST':
@@ -28,10 +36,8 @@ def dashboard(request):
     profile = Profile.objects.get(user=request.user)
     role = profile.role
     # Filter complaints based on user and role
-    if role == 'student' or role == 'faculty' or role == 'non_teaching' or role == 'worker':
-        complaints = Complaint.objects.filter(user=request.user).order_by('-created_at')
-    else:
-        complaints = Complaint.objects.none()
+    complaints = Complaint.objects.filter(user=request.user).order_by('-created_at')
+    
     context = {
         'complaints': complaints,
         'role': role,
@@ -72,6 +78,20 @@ def complaint_detail(request, pk):
             return redirect('complaint_detail', pk=pk)
     else:
         form = RatingForm()
+
+    # Check if the complaint is being resolved
+    if complaint.status == 'Pending' and request.POST.get('resolve'):
+        complaint.status = 'Resolved'
+        complaint.resolved_at = timezone.now()
+        
+        # Send email notification if not already sent
+        if not complaint.email_sent:
+            send_resolution_email(complaint)
+            complaint.email_sent = True  # Mark email as sent
+
+        complaint.save()
+        messages.success(request, 'Complaint resolved successfully!')
+        return redirect('complaint_detail', pk=pk)
     return render(request, 'portal/complaint_detail.html', {
         'complaint': complaint,
         'form': form,
