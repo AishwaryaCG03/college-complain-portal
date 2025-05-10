@@ -93,10 +93,7 @@ def complaint_detail(request, pk):
         complaint.save()
         messages.success(request, 'Complaint resolved successfully!')
         return redirect('complaint_detail', pk=pk)
-<<<<<<< HEAD
-=======
 
->>>>>>> 15e301f (Describe the updates you made)
     return render(request, 'portal/complaint_detail.html', {
         'complaint': complaint,
         'form': form,
