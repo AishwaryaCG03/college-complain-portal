@@ -42,7 +42,7 @@ class Complaint(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     rating = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(1), MaxValueValidator(5)])
     escalation_level = models.PositiveIntegerField(default=0)  # 0: initial, 1: class teacher, 2: HOD, 3: Principal
-
+    email_sent = models.BooleanField(default=False)  # New field to track email notification
     def is_overdue(self):
         if self.status != 'Resolved' and (timezone.now() - self.created_at).days > 14:
             return True
