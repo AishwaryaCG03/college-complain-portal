@@ -4,13 +4,14 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>College Complaint Portal</title>
+    
     <style>
         /* Basic CSS (inline for simplification) */
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f9f9f9; }
         header { background: #004080; color: white; padding: 10px 20px; }
-        header h1 { margin: 0; }
+        header h1 { margin: 0;text-align:center;}
         nav { margin-top: 10px; }
-        nav a { color: white; margin-right: 15px; text-decoration: none; font-weight: bold; }
+        nav a { color: white; margin-right: 15px; text-decoration: none; font-weight: bold;}
         .container { max-width: 900px; margin: 20px auto; padding: 20px; background: white; box-shadow: 0 0 10px rgba(0,0,0,0.1);}
         footer { background: #004080; color: white; text-align: center; padding: 10px; margin-top: 20px;}
         .btn { background: #0066cc; color: white; padding: 8px 15px; border: none; border-radius: 3px; cursor: pointer; font-size: 14px;}
@@ -31,7 +32,10 @@
 </head>
 <body>
     <header>
-        <h1>College Complaint Portal</h1>
+        <h1>DAYANANDA SAGAR ACADEMY OF TECHNOLOGY AND MANAGEMENT</h1>
+        <h2 style=text-align:center>YOUR COMPLAINT PORTAL</h2>
+        
+
         <nav>
             {% if user.is_authenticated %}
                 <a href="{% url 'dashboard' %}">Dashboard</a>
@@ -40,7 +44,7 @@
                 <a href="{% url 'logout' %}">Logout</a>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
+                
             {% endif %}
         </nav>
     </header>
@@ -54,7 +58,18 @@
         {% endblock %}
     </div>
     <footer>
-        &copy; 2024 College Complaint Portal
+        &copy; 2025 College Complaint Portal
     </footer>
 </body>
 </html>
+
+{% if user.is_authenticated %}
+  <!-- Existing navigation links here -->
+  
+  {% if user.profile.role in "class_teacher hod principal admin" %}
+    <a href="{% url 'resolver_dashboard' %}">Resolver Dashboard</a>
+  {% endif %}
+  
+  <!-- Other navigation links such as logout -->
+{% endif %}
+
