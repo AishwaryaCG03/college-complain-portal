@@ -27,3 +27,4 @@ class ComplaintForm(forms.ModelForm):
 
 class RatingForm(forms.Form):
     rating = forms.IntegerField(min_value=1, max_value=5, widget=forms.NumberInput(attrs={'type':'range','min':'1','max':'5'}))
+
