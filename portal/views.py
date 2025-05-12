@@ -10,6 +10,13 @@ from django.utils import timezone
 from django.db.models import Count, Avg
 from datetime import timedelta
 from textblob import TextBlob  # Import TextBlob for sentiment analysis
+import random
+from django.contrib.auth.models import User
+
+from django.utils import timezone
+
+
+
 
 def send_resolution_email(complaint):
     subject = 'Your Complaint has been Resolved'
