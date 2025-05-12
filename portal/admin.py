@@ -4,6 +4,7 @@ from .models import Profile, Category, Complaint
 from django.contrib import admin
 from .models import Complaint
 
+
 @admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ('user', 'role')
@@ -29,4 +30,5 @@ class ComplaintAdmin(admin.ModelAdmin):
         updated = queryset.update(status='Resolved', resolved_at=timezone.now())
         self.message_user(request, f"{updated} complaint(s) marked as resolved.")
     mark_resolved.short_description = "Mark selected complaints as resolved"
+
 
