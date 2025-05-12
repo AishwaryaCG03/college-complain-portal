@@ -31,4 +31,3 @@ class ComplaintAdmin(admin.ModelAdmin):
         self.message_user(request, f"{updated} complaint(s) marked as resolved.")
     mark_resolved.short_description = "Mark selected complaints as resolved"
 
-
