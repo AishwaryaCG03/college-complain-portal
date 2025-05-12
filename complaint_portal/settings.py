@@ -4,11 +4,12 @@ from pathlib import Path
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-change-this-to-a-secret-key'
+# Security settings
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-this-to-a-secret-key')
 
-DEBUG = True
+DEBUG = True  # Set to False in production
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = []  # Add your allowed hosts here, e.g., ['yourdomain.com']
 
 # Application definition
 INSTALLED_APPS = [
@@ -18,7 +19,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'portal',
+    'portal',  # Your app
 ]
 
 MIDDLEWARE = [
@@ -51,7 +52,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'complaint_portal.wsgi.application'
 
-# Database (SQLite for dev)
+# Database (SQLite for development)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -75,7 +76,7 @@ TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-# Static files 
+# Static files
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'portal' / 'static']
 
@@ -86,17 +87,12 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Login redirect
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
-<<<<<<< HEAD
 
-=======
->>>>>>> 15e301f (Describe the updates you made)
-# complaint_portal/settings.py
-
+# Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'your-email@gmail.com'            # Replace with your email
-EMAIL_HOST_PASSWORD = 'your-email-password-or-app-password'  # Use app password if 2FA enabled
-
+EMAIL_HOST_USER = 'aishuaishwaryacg@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'azej ufrs oahj mbew')  # Use app password if 2FA enabled
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
