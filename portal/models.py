@@ -50,10 +50,8 @@ class Complaint(models.Model):
     
     
     assigned_to = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='assigned_complaints')
-
     
     
-     # New field to track email notification
     def is_overdue(self):
         if self.status != 'Resolved' and (timezone.now() - self.created_at).days > 14:
             return True
