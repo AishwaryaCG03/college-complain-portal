@@ -87,12 +87,14 @@ MEDIA_ROOT = BASE_DIR / 'media'
 # Login redirect
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
+# settings.py
+LOGIN_URL = '/login/'
 
 # Email settings
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'your email@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'your password')  # Use app password if 2FA enabled
+EMAIL_HOST_USER = 'aishuaishwaryacg@gmail.com'  # Replace with your email
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'lzth rqcs mghm tzdc')  # Use app password if 2FA enabled
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

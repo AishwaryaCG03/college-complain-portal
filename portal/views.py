@@ -12,8 +12,11 @@ from datetime import timedelta
 from textblob import TextBlob  # Import TextBlob for sentiment analysis
 import random
 from django.contrib.auth.models import User
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.template.loader import render_to_string
 
-from django.utils import timezone
+
 
 
 
@@ -24,7 +27,11 @@ def send_resolution_email(complaint):
     recipient_list = [complaint.user.email] if complaint.user else []
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
 
-
+def send_password_reset_email(user, reset_link):
+    subject = 'Password Reset Request'
+    message = f'Hi {user.username},\n\nYou requested a password reset. Please click the link below to reset your password:\n{reset_link}\nThank you!'
+    recipient_list = [user.email]
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
 
 @login_required
 def dashboard(request):
@@ -52,7 +59,7 @@ def dashboard(request):
     avg_rating = complaints.aggregate(avg=Avg('rating'))['avg'] or 0
 
     # Urgent complaints with negative sentiment (<-0.3)
-    urgent_complaints = complaints.filter(sentiment__lt=-0.3).order_by('sentiment')
+   # urgent_complaints = complaints.filter(sentiment__lt=-0.3).order_by('sentiment')
 
     escalation_count = Complaint.objects.filter(status='Escalated').count() if role == 'admin' else 0
     overdue_count = 0
@@ -64,7 +71,7 @@ def dashboard(request):
 
     context = {
         'complaints': complaints,
-        'urgent_complaints': urgent_complaints,
+        #'urgent_complaints': urgent_complaints,
         'role': role,
         'category_labels': category_labels,
         'category_counts': category_counts,
@@ -135,3 +142,4 @@ def complaint_detail(request, pk):
 @login_required
 def profile(request):
     return render(request, 'portal/profile.html')
+
