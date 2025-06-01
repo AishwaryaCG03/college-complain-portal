@@ -12,7 +12,9 @@ urlpatterns = [
     path('', include('portal.urls')),  # only this one
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('accounts/logout/', LogoutView.as_view(next_page='/'), name='logout'),
-    
+     path('password-reset/', views.password_reset_request_view, name='password_reset_request'),
+    path('password-reset/verify-code/', views.password_reset_verify_code_view, name='password_reset_verify_code'),
+    path('password-reset/confirm/', views.password_reset_confirm_view, name='password_reset_confirm'),
     
 
     # Password reset URLs

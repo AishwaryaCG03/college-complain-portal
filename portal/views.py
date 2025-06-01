@@ -4,22 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
-from .forms import SignUpForm, ComplaintForm, RatingForm
-from .models import Complaint, Category, Profile
+from .forms import SignUpForm, ComplaintForm, RatingForm, PasswordResetRequestForm, PasswordResetCodeForm, SetNewPasswordForm
+from .models import Complaint, Category, Profile, PasswordResetCode
 from django.utils import timezone
 from django.db.models import Count, Avg
 from datetime import timedelta
 from textblob import TextBlob  # Import TextBlob for sentiment analysis
 import random
 from django.contrib.auth.models import User
-from django.utils.http import urlsafe_base64_encode
-from django.utils.encoding import force_bytes
-from django.template.loader import render_to_string
-
-
-
-
-
 
 def send_resolution_email(complaint):
     subject = 'Your Complaint has been Resolved'
@@ -27,9 +19,9 @@ def send_resolution_email(complaint):
     recipient_list = [complaint.user.email] if complaint.user else []
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
 
-def send_password_reset_email(user, reset_link):
+def send_password_reset_email(user, code):
     subject = 'Password Reset Request'
-    message = f'Hi {user.username},\n\nYou requested a password reset. Please click the link below to reset your password:\n{reset_link}\nThank you!'
+    message = f'Hi {user.username},\n\nYou requested a password reset. Your code is: {code}\nThis code will expire in 15 minutes.\nThank you!'
     recipient_list = [user.email]
     send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list)
 
@@ -58,9 +50,6 @@ def dashboard(request):
     resolved_rate = (resolved_count / total_complaints * 100) if total_complaints else 0
     avg_rating = complaints.aggregate(avg=Avg('rating'))['avg'] or 0
 
-    # Urgent complaints with negative sentiment (<-0.3)
-   # urgent_complaints = complaints.filter(sentiment__lt=-0.3).order_by('sentiment')
-
     escalation_count = Complaint.objects.filter(status='Escalated').count() if role == 'admin' else 0
     overdue_count = 0
     if role == 'admin':
@@ -71,7 +60,6 @@ def dashboard(request):
 
     context = {
         'complaints': complaints,
-        #'urgent_complaints': urgent_complaints,
         'role': role,
         'category_labels': category_labels,
         'category_counts': category_counts,
@@ -143,3 +131,87 @@ def complaint_detail(request, pk):
 def profile(request):
     return render(request, 'portal/profile.html')
 
+# Password Reset Views
+def password_reset_request_view(request):
+    if request.method == 'POST':
+        form = PasswordResetRequestForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            user = User.objects.get(email=email)
+
+            # Generate 4 digit code
+            code = f"{random.randint(1000, 9999)}"
+
+            # Delete any existing code for user
+            PasswordResetCode.objects.filter(user=user).delete()
+
+            # Save new code
+            PasswordResetCode.objects.create(user=user, code=code)
+
+            # Send email
+            send_password_reset_email(user, code)
+
+            request.session['password_reset_user_id'] = user.id  # Save in session for next steps
+
+            messages.success(request, '4-digit code has been sent to your email.')
+            return redirect('password_reset_verify_code')
+    else:
+        form = PasswordResetRequestForm()
+    return render(request, 'portal/password_reset_request.html', {'form': form})
+
+def password_reset_verify_code_view(request):
+    user_id = request.session.get('password_reset_user_id')
+    if not user_id:
+        messages.error(request, "Please enter your email to reset password first.")
+        return redirect('password_reset_request')
+
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        form = PasswordResetCodeForm(request.POST)
+        if form.is_valid():
+            code_entered = form.cleaned_data['code']
+            try:
+                reset_code = PasswordResetCode.objects.get(user=user)
+            except PasswordResetCode.DoesNotExist:
+                messages.error(request, 'No reset code found. Please request a new one.')
+                return redirect('password_reset_request')
+
+            if reset_code.is_expired():
+                reset_code.delete()
+                messages.error(request, "Code expired. Please request a new one.")
+                return redirect('password_reset_request')
+
+            if reset_code.code != code_entered:
+                messages.error(request, "Invalid code entered. Please try again.")
+                return redirect('password_reset_verify_code')
+
+            # Code is valid - Proceed to password reset
+            request.session['password_reset_verified'] = True
+            return redirect('password_reset_confirm')
+    else:
+        form = PasswordResetCodeForm()
+    return render(request, 'portal/password_reset_verify_code.html', {'form': form})
+
+def password_reset_confirm_view(request):
+    user_id = request.session.get('password_reset_user_id')
+    verified = request.session.get('password_reset_verified', False)
+
+    if not user_id or not verified:
+        messages.error(request, "Unauthorized access or session expired. Please start over.")
+        return redirect('password_reset_request')
+
+    user = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        form = SetNewPasswordForm(user, request.POST)
+        if form.is_valid():
+            form.save()
+            # Cleanup session and reset code
+            request.session.pop('password_reset_user_id', None)
+            request.session.pop('password_reset_verified', None)
+            PasswordResetCode.objects.filter(user=user).delete()
+
+            messages.success(request, "Your password has been reset successfully. You can now log in.")
+            return redirect('login')
+    else:
+        form = SetNewPasswordForm(user)
+    return render(request, 'portal/password_reset_confirm.html', {'form': form})
