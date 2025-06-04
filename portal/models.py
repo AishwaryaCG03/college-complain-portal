@@ -5,6 +5,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from datetime import timedelta
+from django.core.mail import send_mail
+from django.conf import settings
 
 class Profile(models.Model):
     USER_ROLES = (
@@ -16,6 +18,7 @@ class Profile(models.Model):
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     role = models.CharField(max_length=20, choices=USER_ROLES, default='student')
+    phone_number = models.CharField(max_length=15, blank=True, null=True, help_text="Include country code e.g. +1234567890")
 
     def __str__(self):
         if self.user:
@@ -51,11 +54,40 @@ class Complaint(models.Model):
             return True
         return False
 
-    def escalate(self):
-        if self.escalation_level < 3:
+    def auto_escalate_and_notify(self):
+        days_open = (timezone.now() - self.created_at).days
+        if self.status in ['Pending', 'Escalated'] and days_open > 7 and self.escalation_level < 3:
             self.escalation_level += 1
             self.status = 'Escalated'
             self.save()
+
+            # Determine the user to notify based on escalation level
+            notify_user = None
+            if self.escalation_level == 1:
+                notify_user = self.assigned_to  # Example: class teacher or assigned staff
+            elif self.escalation_level == 2:
+                # Replace with your HOD retrieval logic
+                from .models import Profile
+                hod_profile = Profile.objects.filter(role='hod').first()
+                if hod_profile:
+                    notify_user = hod_profile.user
+            elif self.escalation_level == 3:
+                # Replace with your Principal retrieval logic
+                from .models import Profile
+                principal_profile = Profile.objects.filter(role='principal').first()
+                if principal_profile:
+                    notify_user = principal_profile.user
+
+            if notify_user and notify_user.email:
+                subject = f"Complaint ID {self.id} Escalated to Level {self.escalation_level}"
+                message = (
+                    f"Dear {notify_user.username},\n\n"
+                    f"The complaint with ID {self.id} has been escalated to level {self.escalation_level}.\n"
+                    f"Please take necessary action.\n\n"
+                    "Regards,\n"
+                    "College Complaint Portal"
+                )
+                send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [notify_user.email])
 
     def __str__(self):
         return f"Complaint {self.id} - {self.category.name} - {self.status}"
