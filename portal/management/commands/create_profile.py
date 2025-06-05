@@ -8,6 +8,6 @@ class Command(BaseCommand):
        def handle(self, *args, **kwargs):
            users = User.objects.all()
            for user in users:
-               Profile.objects.get_or_create(user=user, role='default_role')  # Set a default role or customize as needed
+               Profile.objects.get_or_create(user=user, role='default_role')  
            self.stdout.write(self.style.SUCCESS('Successfully created profiles for all users.'))
    

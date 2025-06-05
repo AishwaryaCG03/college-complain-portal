@@ -13,7 +13,7 @@ class ProfileAdmin(admin.ModelAdmin):
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
-# portal/admin.py
+
 
 
 @admin.register(Complaint)
@@ -23,7 +23,7 @@ class ComplaintAdmin(admin.ModelAdmin):
     search_fields = ('description',)
     readonly_fields = ('created_at', 'resolved_at')
 
-    # Optional: add actions to mark complaints as resolved
+    
     actions = ['mark_resolved']
 
     def mark_resolved(self, request, queryset):

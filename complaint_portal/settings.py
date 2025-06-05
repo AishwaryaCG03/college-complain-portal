@@ -1,17 +1,17 @@
 import os
 from pathlib import Path
 
-# Base directory
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Security settings
+
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-change-this-to-a-secret-key')
 
-DEBUG = True  # Set to False in production
+DEBUG = True  
 
-ALLOWED_HOSTS = []  # Add your allowed hosts here, e.g., ['yourdomain.com']
+ALLOWED_HOSTS = []  
 
-# Application definition
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -52,7 +52,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'complaint_portal.wsgi.application'
 
-# Database (SQLite for development)
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -60,7 +60,7 @@ DATABASES = {
     }
 }
 
-# Password validation
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -70,31 +70,31 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
+
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
-# Static files
+
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / 'portal' / 'static']
 
-# Media files (Uploaded evidence)
+
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Login redirect
+
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
-# settings.py
+
 LOGIN_URL = '/login/'
 
-# Email settings
+
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'aishuaishwaryacg@gmail.com'  # Replace with your email
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'lzth rqcs mghm tzdc')  # Use app password if 2FA enabled
+EMAIL_HOST_USER = 'aishuaishwaryacg@gmail.com'  
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'lzth rqcs mghm tzdc')  
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER

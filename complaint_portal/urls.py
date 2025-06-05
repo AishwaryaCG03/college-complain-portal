@@ -9,7 +9,7 @@ from django.contrib.auth.views import LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('portal.urls')),  # only this one
+    path('', include('portal.urls')),  
     path('accounts/login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
     path('accounts/logout/', LogoutView.as_view(next_page='/'), name='logout'),
      path('password-reset/', views.password_reset_request_view, name='password_reset_request'),
@@ -17,7 +17,7 @@ urlpatterns = [
     path('password-reset/confirm/', views.password_reset_confirm_view, name='password_reset_confirm'),
     
 
-    # Password reset URLs
+   
     path('password-reset/', auth_views.PasswordResetView.as_view(), name='password_reset'),
     path('password-reset/done/', auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
     path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(), name='password_reset_confirm'),

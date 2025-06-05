@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% block extra_head %}
-<!-- Include Chart.js from CDN -->
+
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
   .stats-container {
@@ -124,7 +124,7 @@
 {% endif %}
 
 <script>
-  // Prepare datasets from Django context variables
+ 
   const categoryLabels = {{ category_labels|safe }};
   const categoryData = {{ category_counts|safe }};
   const statusLabels = {{ status_labels|safe }};

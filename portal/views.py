@@ -9,7 +9,7 @@ from .models import Complaint, Category, Profile, PasswordResetCode
 from django.utils import timezone
 from django.db.models import Count, Avg
 from datetime import timedelta
-from textblob import TextBlob  # Import TextBlob for sentiment analysis
+from textblob import TextBlob  
 import random
 from django.contrib.auth.models import User
 

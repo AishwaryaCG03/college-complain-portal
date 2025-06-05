@@ -49,6 +49,6 @@ class PasswordResetCodeForm(forms.Form):
         return code
 
 class SetNewPasswordForm(SetPasswordForm):
-    # This extends Django’s SetPasswordForm and will be used to reset the password
+    
     pass
 
