@@ -15,6 +15,10 @@ class Profile(models.Model):
         ('non_teaching', 'Non Teaching Faculty'),
         ('worker', 'Worker'),
         ('guest', 'Guest'),
+        ('class_teacher', 'Class Teacher'),
+        ('hod', 'HOD'),
+        ('principal', 'Principal'),
+        ('admin', 'Admin'),
     )
     user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     role = models.CharField(max_length=20, choices=USER_ROLES, default='student')
@@ -48,6 +52,7 @@ class Complaint(models.Model):
     escalation_level = models.PositiveIntegerField(default=0)  # 0: initial, 1: class teacher, 2: HOD, 3: Principal
     email_sent = models.BooleanField(default=False)
     assigned_to = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL, related_name='assigned_complaints')
+    sentiment = models.FloatField(null=True, blank=True)
 
     def is_overdue(self):
         if self.status != 'Resolved' and (timezone.now() - self.created_at).days > 14:

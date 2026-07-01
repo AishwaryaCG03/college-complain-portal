@@ -38,15 +38,13 @@
                 <a href="{% url 'dashboard' %}">Dashboard</a>
                 <a href="{% url 'create_complaint' %}">New Complaint</a>
                 <a href="{% url 'profile' %}">Profile</a>
-                {% if user.profile.role in "class_teacher hod principal admin" %}
-                    <a href="{% url 'resolver_dashboard' %}">Resolver Dashboard</a>
-                {% endif %}
                 <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                     <button type="submit">Logout</button>
                 </form>
             {% else %}
                 <a href="{% url 'login' %}">Login</a>
+                <a href="{% url 'signup' %}">Sign Up</a>
             {% endif %}
         </nav>
     </header>

@@ -11,7 +11,10 @@
 </form>
 
 <p>
-    <a href="{% url 'password_reset' %}">{% trans "Forgot Password?" %}</a>
+    <a href="{% url 'password_reset_request' %}">{% trans "Forgot Password?" %}</a>
+</p>
+<p>
+    <a href="{% url 'signup' %}">{% trans "Sign Up" %}</a>
 </p>
 
 {% endblock %}

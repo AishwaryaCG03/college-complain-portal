@@ -215,3 +215,20 @@ def password_reset_confirm_view(request):
     else:
         form = SetNewPasswordForm(user)
     return render(request, 'portal/password_reset_confirm.html', {'form': form})
+
+def signup(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            # Get the role from the form and set the profile
+            role = form.cleaned_data.get('role')
+            profile = Profile.objects.get(user=user)
+            profile.role = role
+            profile.save()
+            login(request, user)
+            messages.success(request, 'Account created successfully!')
+            return redirect('dashboard')
+    else:
+        form = SignUpForm()
+    return render(request, 'portal/signup.html', {'form': form})
